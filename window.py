@@ -1,7 +1,7 @@
 import pygame,sys
 from pygame.locals import *
 
-from Primitives import polygon
+from shapes import *
 
 #   Remember always need self.attrName to access class attributes
 #   Class for handling window management and game loop logic
@@ -19,7 +19,7 @@ class Window:
         self.DISPLAYSURF = pygame.display.set_mode((width, height))
         pygame.display.set_caption(name)
         self.shapes = []
-        self.addShape(polygon.Polygon(self.DISPLAYSURF, self.GREEN,
+        self.addShape(Polygon(self.DISPLAYSURF, self.GREEN,
                                       ((146, 0), (291, 106), (236, 277), (56, 277), (0, 106))))
 
     # Start the game loop
