@@ -11,7 +11,7 @@ class Window:
     BLACK = (0, 0, 0, 255)
     WHITE = (255, 255, 255, 255)
     RED = (255, 0, 0, 255)
-    GREEN = (0, 255, 0, 255)
+    GREEN = (0, 255, 0, 10)
     BLUE = (0, 0, 255, 255)
 
     def __init__(self, name, height, width):
@@ -19,8 +19,7 @@ class Window:
         self.DISPLAYSURF = pygame.display.set_mode((width, height))
         pygame.display.set_caption(name)
         self.shapes = []
-        self.addShape(Polygon(self.DISPLAYSURF, self.GREEN,
-                                      ((146, 0), (291, 106), (236, 277), (56, 277), (0, 106))))
+        self.addShape(Polygon(self.GREEN, ((146, 0), (291, 106), (236, 277), (56, 277), (0, 106))))
 
     # Start the game loop
     # Loop => Input -> Physics -> Render
@@ -35,7 +34,7 @@ class Window:
 
     def draw(self):
         for shape in self.shapes:
-            shape.draw()
+            shape.draw(self.DISPLAYSURF)
 
     def addShape(self, shape):
         self.shapes.append(shape)
