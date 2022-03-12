@@ -13,6 +13,10 @@ class GameObject:
         self.primitive = prim
         pass
 
+    def __init__(self, prim, velocity):
+        self.primitive = prim
+        self.velocity = velocity
+
     def update(self, displaySurf):
         if(self.can_collide):           #   Check if a collision check needs to happen
             self.handle_collision()
@@ -37,7 +41,7 @@ class GameObject:
             x = self.velocity[0] * -1
         else:
             x = self.velocity[0]
-            
+
         self.change_velocity(x, y)
 
     def change_velocity(self, x, y):

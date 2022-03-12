@@ -1,3 +1,4 @@
+from random import randint, random
 import pygame,sys
 from pygame.locals import *
 
@@ -61,5 +62,7 @@ class Window:
         self.shapes[id] = shape
 
     def createGameObj(self, id, prim):
-        gameObj = GameObject(prim)      #   Instantiate the game object
+        velX = randint(1, 3)
+        velY = randint(1, 3)
+        gameObj = GameObject(prim, (velX, velY))      #   Instantiate the game object
         self.game_objs[id] = gameObj    #   Add the object to the dict of objects
