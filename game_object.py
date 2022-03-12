@@ -26,8 +26,9 @@ class GameObject:
         bottom = rect.bottom
         left = rect.left
         right = rect.right
-        boundX = window.BoundsX - 5                 #   Window boundaries
-        boundY = window.BoundsY - 5
+        boundX = window.BoundsX                     #   Window boundaries
+        boundY = window.BoundsY
+
         if(top < 10 or bottom > boundY):
             y = self.velocity[1] * -1
         else:
@@ -36,6 +37,7 @@ class GameObject:
             x = self.velocity[0] * -1
         else:
             x = self.velocity[0]
+            
         self.change_velocity(x, y)
 
     def change_velocity(self, x, y):
