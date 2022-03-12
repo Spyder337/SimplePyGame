@@ -19,7 +19,6 @@ class Primitive:
         self.do_update = True
         pass
 
-
 class Polygon(Primitive):
 
     def __init__(self, color, points, pos):

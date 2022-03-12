@@ -4,13 +4,16 @@ from pygame.locals import *
 from shapes import *
 from game_object import *
 
+BoundsX = 0
+BoundsY = 0
+
 #   Remember always need self.attrName to access class attributes
 #   Class for handling window management and game loop logic
 #   May partition the game loop to its own class
 class Window:
     display_surf = None             #   Main canvas for the window
 
-    # Color        R    G   B   A
+    # Color       R    G    B    A
     BLACK =     (  0,   0,   0, 255)
     WHITE =     (255, 255, 255, 255)
     RED =       (255,   0,   0,  50)
@@ -21,6 +24,8 @@ class Window:
         pygame.init()
         self.display_surf = pygame.display.set_mode((width, height))
         self.display_surf.fill(self.WHITE)
+        window.BoundsX = self.display_surf.get_width()
+        window.BoundsY = self.display_surf.get_height()
         pygame.display.set_caption(name)
         self.init_scene()
 
