@@ -8,12 +8,14 @@ from game_object import *
 #   Class for handling window management and game loop logic
 #   May partition the game loop to its own class
 class Window:
-    display_surf = None
-    BLACK = (0, 0, 0, 255)
-    WHITE = (255, 255, 255, 255)
-    RED = (255, 0, 0, 50)
-    GREEN = (0, 255, 0, 150)
-    BLUE = (0, 0, 255, 150)
+    display_surf = None             #   Main canvas for the window
+
+    # Color        R    G   B   A
+    BLACK =     (  0,   0,   0, 255)
+    WHITE =     (255, 255, 255, 255)
+    RED =       (255,   0,   0,  50)
+    GREEN =     (0  , 255,   0, 150)
+    BLUE =      (0  ,   0, 255, 150)
 
     def __init__(self, name, height, width):
         pygame.init()
@@ -23,14 +25,10 @@ class Window:
         self.init_scene()
 
     def init_scene(self):
-        self.shapes = {}
         self.game_objs = {}
         circle = Circle(self.BLUE, 100, (200, 200))
         poly = Polygon(self.GREEN, ((146, 0), (291, 106), (236, 277), (56, 277), (0, 106)), (400, 400))
         rect = Rectangle(self.RED, (400, 400), (0, 0, 200, 200))
-        self.addShape("circ1", circle)
-        self.addShape("poly1", poly)
-        self.addShape("rect1", rect)
         self.createGameObj("circle", circle)
         self.createGameObj("polygon", poly)
         self.createGameObj("rectangle", rect)
@@ -39,33 +37,24 @@ class Window:
     # Loop => Input -> Physics -> Render
     def start(self):
         while True:
-            self.display_surf.fill(self.WHITE)
-            for event in pygame.event.get():
-                if event.type == QUIT:
+            self.display_surf.fill(self.WHITE)  #   Reset the render canvas
+            for event in pygame.event.get():    #   Iterate over events
+                if event.type == QUIT:          #   Clicking X button
                     pygame.quit()
                     sys.exit()
-            self.update()
-            pygame.display.update()
+            self.update()                       #   Handle updates to game objects
+            pygame.display.update()             #   Update the display
 
     def update(self):
-        for id in self.game_objs:
-            if(not self.game_objs[id].do_update):
+        for id in self.game_objs:                           #   Iterate over objects
+            if(not self.game_objs[id].do_update):           #   If no changes do not update
                 continue
-            self.game_objs[id].update(self.display_surf)
-
-    def draw(self):
-        for id in self.shapes:
-            if(not self.shapes[id].do_update):
-                continue
-            print("Shape: " + id)
-            print("Color: " + str(self.shapes[id].color))
-            print("Pos: " + str(self.shapes[id].pos))
-            print()
-            self.shapes[id].draw(self.display_surf)
+            self.game_objs[id].update(self.display_surf)    #   Otherwise update the object
+            print(self.game_objs[id].toString())            #   Print information about it
 
     def addShape(self, id, shape):
         self.shapes[id] = shape
 
     def createGameObj(self, id, prim):
-        gameObj = GameObject(prim)
-        self.game_objs[id] = gameObj
+        gameObj = GameObject(prim)      #   Instantiate the game object
+        self.game_objs[id] = gameObj    #   Add the object to the dict of objects
