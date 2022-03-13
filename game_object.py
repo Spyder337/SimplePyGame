@@ -7,10 +7,11 @@ class GameObject:
     is_alive = True         #   Should it be culled
     can_collide = True      #   Can collisions occur
     do_update = True        #   Did the position or color change
+    has_sprite = False
     
-
-    def __init__(self, prim):
+    def __init__(self, prim, isSprite = False):
         self.primitive = prim
+        self.has_sprite = isSprite
         pass
 
     def __init__(self, prim, velocity):

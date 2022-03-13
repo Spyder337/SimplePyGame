@@ -17,7 +17,25 @@ class Primitive:
     #   Used for moving the object
     def updatePos(self, newPos):
         self.do_update = True
-        pass
+        pos = newPos
+
+class Sprite(Primitive):
+    imagePath = ""
+    image = None
+
+    def __init__(self, color, pos, imagePath):
+        super.__init__(color,  pos)
+        self.imagePath = imagePath
+        self.image = pygame.image.load(self.imagePath).convert_alpha()
+        self.image.set_colorkey((0, 0, 0, 150))
+        self.rect = self.image.get_rect()
+
+    def draw(self, display_surf):
+        display_surf.blit(self.image, self.pos)
+
+    def updatePos(self, newPos):
+        super().updatePos(newPos)
+        self.rect.center = self.pos
 
 class Polygon(Primitive):
 
@@ -36,6 +54,7 @@ class Polygon(Primitive):
         self.do_update = False                                                                                          #   Do not redraw it by default
 
     def updatePos(self, newPos):
+        self.do_update = True
         self.pos = newPos
         self.target_rect.center = self.pos
 
