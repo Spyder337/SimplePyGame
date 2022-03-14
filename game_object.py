@@ -3,6 +3,7 @@ import window
 
 
 class GameObject:
+    id = ""
     primitive = None        #   Item to be rendered
     velocity = (1, 1)       #   Speed
     is_alive = True         #   Should it be culled
@@ -10,25 +11,52 @@ class GameObject:
     do_update = True        #   Did the position or color change
     has_sprite = False
     is_static = False
+    can_damage = False
+    damage = 0.0
+    health = 10.0
     
-    def __init__(self, prim, display_surf, velocity = (1, 1), has_sprite = False, is_static = False, scale = 1.0):
+    def __init__(self, id, prim, display_surf, velocity = (1, 1), has_sprite = False, is_static = False, scale = 1.0):
+        self.id = id
         self.primitive = prim
         self.primitive.scalePrimitive(display_surf, scale)
         self.velocity = velocity
         self.has_sprite = has_sprite
         self.is_static = is_static
+        self.has_collided = False
+        self.collisions = []
+        
 
     def update(self, displaySurf):
+        if(not self.is_alive):
+            return
+
         if(not self.is_static):
 
             if(self.can_collide):           #   Check if a collision check needs to happen
                 self.handle_collision()
+            self.move()                     #   Handle movement
 
-            self.move()                 #   Handle movement
-
-        self.render(displaySurf)        #   Render the primitive
+        self.render(displaySurf)            #   Render the primitive
 
     def handle_collision(self):
+        if(self.has_collided == True):      #   If collision occured
+            for col in self.collisions:
+                self.OnCollide(col)         #   evaluate collision
+        self.window_collision()
+
+    def OnCollide(self, targetGameObj, dealDmg = False):
+        if(not dealDmg):
+            if(targetGameObj.can_damage):
+                self.takeDmg(targetGameObj.damage)
+        else:
+            targetGameObj.takeDmg(self.damage)
+
+    def takeDmg(self, dmgAmount):
+        self.health -= dmgAmount
+        if(self.health <= 0):
+            self.is_alive = False
+
+    def window_collision(self):
         size = self.primitive.target_rect.size      #   Size of the collision box
         rect =  self.primitive.target_rect
         top = rect.top

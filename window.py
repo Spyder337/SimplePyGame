@@ -13,6 +13,7 @@ BoundsY = 0
 #   May partition the game loop to its own class
 class Window:
     display_surf = None                     #   Main canvas for the window
+    world_objects = None
 
     # Color       R    G    B    A
     BLACK =     (  0,   0,   0, 255)
@@ -39,7 +40,7 @@ class Window:
         self.createGameObj("circle", circle)
         self.createGameObj("polygon", poly)
         self.createGameObj("rectangle", rect)
-        static_sprite = GameObject(sprite, self.display_surf, (0, 0), True, True, 10)
+        static_sprite = GameObject("static_sprite", sprite, self.display_surf, (0, 0), True, True, 10)
         self.game_objs["static_sprite"] = static_sprite
 
     # Start the game loop
@@ -57,6 +58,8 @@ class Window:
     def update(self):
         for id in self.game_objs:                           #   Iterate over objects
             self.game_objs[id].update(self.display_surf)    #   Update the object
+            if(not self.game_objs[id].is_alive):
+                del self.game_objs[id]
             #print(self.game_objs[id].toString())            #   Print information about it
 
     def addShape(self, id, shape):
@@ -65,5 +68,5 @@ class Window:
     def createGameObj(self, id, prim):
         velX = randint(1, 3)
         velY = randint(1, 3)
-        gameObj = GameObject(prim, self.display_surf, (velX, velY))        #   Instantiate the game object
-        self.game_objs[id] = gameObj                    #   Add the object to the dict of objects
+        gameObj = GameObject(id, prim, self.display_surf, (velX, velY))         #   Instantiate the game object
+        self.game_objs[id] = gameObj                                        #   Add the object to the dict of objects
