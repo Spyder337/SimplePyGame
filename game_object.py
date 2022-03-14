@@ -1,3 +1,4 @@
+from pygame import Vector2
 import window
 
 
@@ -8,20 +9,23 @@ class GameObject:
     can_collide = True      #   Can collisions occur
     do_update = True        #   Did the position or color change
     has_sprite = False
+    is_static = False
     
-    def __init__(self, prim, isSprite = False):
+    def __init__(self, prim, display_surf, velocity = (1, 1), has_sprite = False, is_static = False, scale = 1.0):
         self.primitive = prim
-        self.has_sprite = isSprite
-        pass
-
-    def __init__(self, prim, velocity):
-        self.primitive = prim
+        self.primitive.scalePrimitive(display_surf, scale)
         self.velocity = velocity
+        self.has_sprite = has_sprite
+        self.is_static = is_static
 
     def update(self, displaySurf):
-        if(self.can_collide):           #   Check if a collision check needs to happen
-            self.handle_collision()
-        self.move()                     #   Handle movement
+        if(not self.is_static):
+
+            if(self.can_collide):           #   Check if a collision check needs to happen
+                self.handle_collision()
+
+            self.move()                 #   Handle movement
+
         self.render(displaySurf)        #   Render the primitive
 
     def handle_collision(self):
@@ -34,11 +38,12 @@ class GameObject:
         boundX = window.BoundsX                     #   Window boundaries
         boundY = window.BoundsY
 
-        if(top < 10 or bottom > boundY):
+        if(top <= 0 or bottom >= boundY):           #   Modify direction if colliding with a side
             y = self.velocity[1] * -1
         else:
             y = self.velocity[1]
-        if(left < 10 or right > boundX):
+
+        if(left <= 10 or right >= boundX):          #   Modift direction if colliding with top or bottom
             x = self.velocity[0] * -1
         else:
             x = self.velocity[0]
@@ -54,6 +59,7 @@ class GameObject:
         xPos += self.velocity[0]                #   Modify the location by velocity
         yPos += self.velocity[1]
         self.primitive.updatePos((xPos, yPos))  #   Update the render objects position
+        self.do_update = True
 
     def render(self, displaySurf):
         self.primitive.draw(displaySurf)

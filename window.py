@@ -12,7 +12,7 @@ BoundsY = 0
 #   Class for handling window management and game loop logic
 #   May partition the game loop to its own class
 class Window:
-    display_surf = None             #   Main canvas for the window
+    display_surf = None                     #   Main canvas for the window
 
     # Color       R    G    B    A
     BLACK =     (  0,   0,   0, 255)
@@ -35,9 +35,12 @@ class Window:
         circle = Circle(self.BLUE, 100, (200, 200))
         poly = Polygon(self.GREEN, ((146, 0), (291, 106), (236, 277), (56, 277), (0, 106)), (400, 400))
         rect = Rectangle(self.RED, (400, 400), (0, 0, 200, 200))
+        sprite = Sprite((0, 0, 0), (400, 400), "sprites/fireball.png")
         self.createGameObj("circle", circle)
         self.createGameObj("polygon", poly)
         self.createGameObj("rectangle", rect)
+        static_sprite = GameObject(sprite, self.display_surf, (0, 0), True, True, 10)
+        self.game_objs["static_sprite"] = static_sprite
 
     # Start the game loop
     # Loop => Input -> Physics -> Render
@@ -53,10 +56,8 @@ class Window:
 
     def update(self):
         for id in self.game_objs:                           #   Iterate over objects
-            if(not self.game_objs[id].do_update):           #   If no changes do not update
-                continue
-            self.game_objs[id].update(self.display_surf)    #   Otherwise update the object
-            print(self.game_objs[id].toString())            #   Print information about it
+            self.game_objs[id].update(self.display_surf)    #   Update the object
+            #print(self.game_objs[id].toString())            #   Print information about it
 
     def addShape(self, id, shape):
         self.shapes[id] = shape
@@ -64,5 +65,5 @@ class Window:
     def createGameObj(self, id, prim):
         velX = randint(1, 3)
         velY = randint(1, 3)
-        gameObj = GameObject(prim, (velX, velY))      #   Instantiate the game object
-        self.game_objs[id] = gameObj    #   Add the object to the dict of objects
+        gameObj = GameObject(prim, self.display_surf, (velX, velY))        #   Instantiate the game object
+        self.game_objs[id] = gameObj                    #   Add the object to the dict of objects
