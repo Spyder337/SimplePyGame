@@ -10,20 +10,25 @@ class GameObject:
     can_collide = True      #   Can collisions occur
     do_update = True        #   Did the position or color change
     has_sprite = False
-    is_static = False
-    can_damage = False
+    is_static = False       #   If the object can move
+    can_damage = False      #   If the object can deal damage
+    invulnerable = False
     damage = 0.0
-    health = 10.0
+    health = 10.0           #   Health if the object can deal damage
     
-    def __init__(self, id, prim, display_surf, velocity = (1, 1), has_sprite = False, is_static = False, scale = 1.0):
+    def __init__(self, id, prim, display_surf, velocity = (1, 1), has_sprite = False, is_static = False, scale = 1.0, 
+                invulnerable = False, canDamage = False, damage = 0.0):
         self.id = id
         self.primitive = prim
         self.primitive.scalePrimitive(display_surf, scale)
         self.velocity = velocity
         self.has_sprite = has_sprite
         self.is_static = is_static
+        self.can_damage = canDamage
         self.has_collided = False
+        self.invulnerable = invulnerable
         self.collisions = []
+        self.damage = damage
         
 
     def update(self, displaySurf):
@@ -33,23 +38,38 @@ class GameObject:
         if(not self.is_static):
 
             if(self.can_collide):           #   Check if a collision check needs to happen
-                self.handle_collision()
+                self.update_collisions()    #   Check for any collisions
+                self.handle_collision()     #   Iterate through the collisions and handle them
             self.move()                     #   Handle movement
 
         self.render(displaySurf)            #   Render the primitive
+
+    def update_collisions(self):
+        for id in window.GameObjects:                                       #   Iterate through game objects
+            go = window.GameObjects[id]
+            if go.can_collide:                                              #   Check if the object has collisions enabled
+                if self.primitive.rect.colliderect(go.primitive.rect):      
+                    self.collisions.append(go)                              #   If a collision occurs add it to a list of collisions
+                    self.has_collided = True
+                    if(self.id != "static_sprite"):
+                        print(self.id + " collided with " + go.id + "\n")
 
     def handle_collision(self):
         if(self.has_collided == True):      #   If collision occured
             for col in self.collisions:
                 self.OnCollide(col)         #   evaluate collision
         self.window_collision()
+        self.has_collided = False
+        self.collisions = []
 
-    def OnCollide(self, targetGameObj, dealDmg = False):
-        if(not dealDmg):
-            if(targetGameObj.can_damage):
+    def OnCollide(self, targetGameObj):
+        if(self.can_damage):                        #   Can the object damage what it collided with
+            if(not targetGameObj.invulnerable):     #   Is the object collided with invulnerable
+                targetGameObj.takeDmg(self.damage)  #   Apply damage
+        
+        if(targetGameObj.can_damage):               #   Can the target deal damage
+            if(not self.invulnerable):
                 self.takeDmg(targetGameObj.damage)
-        else:
-            targetGameObj.takeDmg(self.damage)
 
     def takeDmg(self, dmgAmount):
         self.health -= dmgAmount
