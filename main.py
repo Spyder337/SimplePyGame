@@ -1,4 +1,3 @@
-import pygame
 import window
 
 if __name__ == '__main__':
