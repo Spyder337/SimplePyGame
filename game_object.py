@@ -4,25 +4,25 @@ import time
 import window
 
 
-def GetRandomVelocity(max):
-    x = random(0, max) * (-1 if random() < 0.5 else 1)
-    y = random(0, max) * (-1 if random() < 0.5 else 1)
+def get_random_velocity(max_velocity):
+    x = random.randint(0, max_velocity) * (-1 if random.random() < 0.5 else 1)
+    y = random.randint(0, max_velocity) * (-1 if random.random() < 0.5 else 1)
     vel = (x, y)
     return vel
 
 
-def GetRandomScale(max):
-    scale = random.randint(0, max)
+def get_random_scale(max_scale):
+    scale = random.randint(0, max_scale)
     return scale
 
 
-def GetRandomDamage(max):
-    dmg = random.random(0, max)
+def get_random_damage(max_dmg):
+    dmg = random.randint(0, max_dmg)
     return dmg
 
 
-def GetRandomLifespan(max):
-    lifespan = random.randint(0, max)
+def get_random_lifespan(max_lifespan):
+    lifespan = random.randint(0, max_lifespan)
     return lifespan
 
 
@@ -49,7 +49,7 @@ class GameObject:
                  invulnerable=False, can_damage=False, damage=0.0):
         self.id = id
         self.primitive = prim
-        self.primitive.scalePrimitive(display_surf, scale)
+        self.primitive.scale_primitive(display_surf, scale)
         self.velocity = velocity
         self.has_sprite = has_sprite
         self.is_static = is_static
@@ -58,9 +58,8 @@ class GameObject:
         self.invulnerable = invulnerable
         self.collisions = []
         self.damage = damage
-        self.display = display_surf
 
-    def update(self, displaySurf):
+    def update(self, display_surf):
         if not self.is_alive:
             return
 
@@ -71,7 +70,7 @@ class GameObject:
                 self.handle_collision()  # Iterate through the collisions and handle them
             self.move()  # Handle movement
 
-        self.render(displaySurf)  # Render the primitive
+        self.render(display_surf)  # Render the primitive
 
     def update_collisions(self):
         for id in window.GameObjects:  # Iterate through game objects
@@ -80,8 +79,6 @@ class GameObject:
                 if self.primitive.rect.colliderect(go.primitive.rect):
                     self.collisions.append(go)  # If a collision occurs add it to a list of collisions
                     self.has_collided = True
-                    if self.id != "static_sprite":
-                        print(self.id + " collided with " + go.id + "\n")
 
     def handle_collision(self):
         if self.has_collided:  # If collision occured
@@ -131,19 +128,21 @@ class GameObject:
         self.velocity = (x, y)
 
     def move(self):
-        xPos = self.primitive.pos[0]  # Get the x position
-        yPos = self.primitive.pos[1]  # Get the y position
-        xPos += self.velocity[0]  # Modify the location by velocity
-        yPos += self.velocity[1]
-        self.primitive.updatePos((xPos, yPos))  # Update the render objects position
+        x_pos = self.primitive.pos[0]  # Get the x position
+        y_pos = self.primitive.pos[1]  # Get the y position
+        x_pos += self.velocity[0]  # Modify the location by velocity
+        y_pos += self.velocity[1]
+        self.primitive.update_pos((x_pos, y_pos))  # Update the render objects position
         self.do_update = True
 
     def render(self, displaySurf):
         self.primitive.draw(displaySurf)
 
-    def toString(self):
-        print("Pos: " + str(self.primitive.pos))
-        print("Velocity: " + str(self.velocity))
+    def to_string(self):
+        print("Id: " + self.id)
+        print("\tPos: " + str(self.primitive.pos))
+        print("\tVelocity: " + str(self.velocity))
+        print("\tHealth: " + str(self.health) + '\n')
 
 
 class Particle(GameObject):
@@ -154,11 +153,11 @@ class Particle(GameObject):
                  invulnerable=False, can_damage=False, damage=0.0):
         super().__init__(id, prim, display_surf, velocity, has_sprite, is_static, scale, invulnerable, can_damage,
                          damage)
-        self.startTime = time.time()
+        self.startTime = time.process_time()
 
-    def update(self):
+    def update(self, display_surf):
         self.move()
-        self.render()
+        self.render(display_surf)
 
     def move(self):
         if self.gravity:
@@ -169,11 +168,12 @@ class Particle(GameObject):
     def render(self, display_surf):
         return super().render(display_surf)
 
-    def update_lifespan(self):
-        curr_time = time.clock()
-        elapsed_time = curr_time - self.startTime
-        if elapsed_time > self.life_span:
-            self.is_alive = False
+
+def update_lifespan(particle):                      # Called by the controller
+    curr_time = time.process_time()
+    elapsed_time = curr_time - particle.startTime
+    if elapsed_time > particle.life_span:
+        particle.is_alive = False
 
 
 class ParticleController(GameObject):
@@ -187,22 +187,32 @@ class ParticleController(GameObject):
 
     def generate_particles(self, amount):
         for i in range(amount):
-            vel = GetRandomVelocity(10)
-            scale = GetRandomScale(3)
-            pId = self.id + str(i)
-            p = Particle(pId, self.primitive, self.display, vel, scale=scale, invulnerable=True)
-            p.life_span = GetRandomLifespan(500)
+            vel = get_random_velocity(10)
+            scale = get_random_scale(3)
+            p_id = self.id + str(i)
+            p = Particle(p_id, self.primitive, self.display, vel, scale=scale, invulnerable=True)
+            p.life_span = get_random_lifespan(500)
             self.particles.append(p)
 
     def move(self):  # Disabled currently
         pass
 
-    def update(self):
+    def update(self, display_surf):
+        removals = []
         for p in self.particles:
-            p.update_lifespan()
             if not p.is_alive:
+                removals.append(p)
+                continue
+            update_lifespan(p)
+            if not p.is_alive:
+                removals.append(p)
                 continue
             p.update()
+
+        for p in removals:
+            self.particles.remove(p)
+
+        removals = []
 
     def render(self, display_surf):  # Disabled currently
         pass

@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="97236610-5472-4c5b-a4a2-cc1990e22080" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/SimplePyGame.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SimplePyGame.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game_object.py" beforeDir="false" afterPath="$PROJECT_DIR$/game_object.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shapes.py" beforeDir="false" afterPath="$PROJECT_DIR$/shapes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/window.py" beforeDir="false" afterPath="$PROJECT_DIR$/window.py" afterDir="false" />
     </list>
@@ -76,6 +73,8 @@
       <updated>1647659331715</updated>
       <workItem from="1647659333873" duration="2362000" />
       <workItem from="1647692420392" duration="214000" />
+      <workItem from="1647745039178" duration="4063000" />
+      <workItem from="1647782207429" duration="665000" />
     </task>
     <servers />
   </component>

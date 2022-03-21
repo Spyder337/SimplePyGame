@@ -17,11 +17,11 @@ class Primitive:
         pass
 
     #   Used for moving the object
-    def updatePos(self, newPos):
+    def update_pos(self, new_pos):
         self.do_update = True
-        pos = newPos
+        self.pos = new_pos
 
-    def scalePrimitive(self, display_surf, scale):
+    def scale_primitive(self, display_surf, scale):
         print(str(self.shape_surf.get_rect().size))
         self.shape_surf = pygame.transform.rotozoom(self.shape_surf, 0, scale).convert_alpha()
         self.rect = self.shape_surf.get_rect()
@@ -32,8 +32,8 @@ class Primitive:
 class Sprite(Primitive):
     imagePath = ""
 
-    def __init__(self, color, pos, imagePath):
-        self.imagePath = imagePath
+    def __init__(self, color, pos, image_path):
+        self.imagePath = image_path
         self.shape_surf = pygame.image.load(self.imagePath).convert_alpha()
         self.shape_surf.set_colorkey((0, 0, 0, 255))
         self.rect = self.shape_surf.get_rect()
@@ -42,8 +42,8 @@ class Sprite(Primitive):
     def draw(self, display_surf):
         display_surf.blit(self.shape_surf, self.pos)
 
-    def updatePos(self, newPos):
-        super().updatePos(newPos)
+    def update_pos(self, new_pos):
+        super().update_pos(new_pos)
         self.rect.center = self.pos
 
 
@@ -65,8 +65,8 @@ class Polygon(Primitive):
         display_surf.blit(self.shape_surf, self.target_rect)  # Blend the primitive's surface and the display one
         #   Do not redraw it by default
 
-    def updatePos(self, newPos):
-        self.pos = newPos
+    def update_pos(self, new_pos):
+        self.pos = new_pos
         self.target_rect.center = self.pos
 
 
@@ -85,8 +85,8 @@ class Circle(Primitive):
         pygame.draw.circle(self.shape_surf, self.color, (self.radius, self.radius), self.radius)
         display_surf.blit(self.shape_surf, self.target_rect)
 
-    def updatePos(self, newPos):
-        self.pos = newPos
+    def update_pos(self, new_pos):
+        self.pos = new_pos
         self.target_rect.center = self.pos
 
 
@@ -102,6 +102,6 @@ class Rectangle(Primitive):
         pygame.draw.rect(self.shape_surf, self.color, self.shape_surf.get_rect())
         display_surf.blit(self.shape_surf, self.target_rect)
 
-    def updatePos(self, newPos):
-        self.pos = newPos
+    def update_pos(self, new_pos):
+        self.pos = new_pos
         self.target_rect.center = self.pos
